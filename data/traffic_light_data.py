@@ -1,10 +1,13 @@
 # import relevant libraries 
 import requests            # for api
 import pandas as pd        # for dataframe
-import json                # for exploring json data 
-
+import geojson             # for exploring json data 
+import geopandas as gpd    # for geographical data
+from pyproj import CRS
+from owslib.wfs import WebFeatureService
 
 url = "https://kartta.hel.fi/ws/geoserver/avoindata/wfs" # where API is ?
+
 # what I want to get from the API
 params = {
     "service": "WFS",
@@ -22,13 +25,6 @@ if response.status_code == 200:
 else:
     print(f"Error: {response.status_code} - {response.text}")
 
-# explore JSON data - what is going on there 
-len(data) # length of the data is 7 
-
-# print the entire list
-print(json.dumps(data, indent=2))
-
-# print each element in the list
-for i, row in enumerate(data):
-    print(f"\nRow {i + 1}:")
-    print(json.dumps(row, indent=2))
+# create GeoDataFrame from geojson and set coordinate reference system
+traffic_light_data = gpd.GeoDataFrame.from_features(geojson.loads(response.content), crs="EPSG:3067")
+print(traffic_light_data)
