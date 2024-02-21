@@ -26,5 +26,12 @@ else:
     print(f"Error: {response.status_code} - {response.text}")
 
 # create GeoDataFrame from geojson and set coordinate reference system
-traffic_light_data = gpd.GeoDataFrame.from_features(geojson.loads(response.content), crs="EPSG:3067")
-print(traffic_light_data)
+tf_light_data = gpd.GeoDataFrame.from_features(geojson.loads(response.content), 
+                                                    crs="EPSG:3067")
+
+# get column names 
+print(tf_light_data.columns.values.tolist())
+# translate column names to english 
+tf_light_data.columns = ['geometry', 'id', 'number', 'type', 'intersection', 
+                         'additional_information', 'data_owner', 'date_updated']
+
